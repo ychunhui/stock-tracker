@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Test - Be My Ext</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="sms-service.js"></script>
+    <style>
+        .sms-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .result-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            color: #0369a1;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .info-box p {
+            color: #075985;
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .info-box a {
+            color: #0284c7;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <h1 class="logo">Be My Ext</h1>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="stocks.html">Stocks</a></li>
+                    <li><a href="sms-test.html">SMS Test</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="stocks-section">
+            <div class="container">
+                <h2>SMS Test</h2>
+                <p class="section-description">Send text messages to any phone number</p>
+
+                <div class="sms-container">
+                    <div class="info-box">
+                        <h4>📱 Setup Required</h4>
+                        <p>To use SMS functionality, you need a Twilio account. Sign up for free at <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio</a> and add your credentials to <code>sms-service.js</code></p>
+                    </div>
+
+                    <form id="sms-form">
+                        <div class="form-group">
+                            <label for="phone-number">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="phone-number" 
+                                placeholder="+1234567890" 
+                                required
+                                pattern="^\+?[1-9]\d{1,14}$"
+                            >
+                            <small style="color: #666; font-size: 0.85rem;">Use international format: +1 for US, +44 for UK, etc.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea 
+                                id="message" 
+                                placeholder="Enter your message here..."
+                                required
+                                maxlength="1600"
+                            ></textarea>
+                            <div class="char-count">
+                                <span id="char-count">0</span> / 1600 characters
+                            </div>
+                        </div>
+
+                        <button type="submit" class="send-button" id="send-button">
+                            📤 Send SMS
+                        </button>
+                    </form>
+
+                    <div id="result-message" class="result-message"></div>
+                </div>
+
+                <div class="sms-container" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Quick Stock Alert Test</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Send a sample stock alert message</p>
+                    
+                    <div class="form-group">
+                        <label for="alert-phone">Phone Number</label>
+                        <input 
+                            type="tel" 
+                            id="alert-phone" 
+                            placeholder="+1234567890"
+                        >
+                    </div>
+
+                    <button onclick="sendTestStockAlert()" class="send-button">
+                        📊 Send Test Stock Alert
+                    </button>
+
+                    <div id="alert-result" class="result-message"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Be My Ext. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Character counter
+        const messageInput = document.getElementById('message');
+        const charCount = document.getElementById('char-count');
+
+        messageInput.addEventListener('input', () => {
+            charCount.textContent = messageInput.value.length;
+        });
+
+        // SMS Form submission
+        document.getElementById('sms-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phoneNumber = document.getElementById('phone-number').value;
+            const message = document.getElementById('message').value;
+            const sendButton = document.getElementById('send-button');
+            const resultDiv = document.getElementById('result-message');
+
+            // Disable button and show loading
+            sendButton.disabled = true;
+            sendButton.textContent = '📤 Sending...';
+            resultDiv.style.display = 'none';
+
+            try {
+                // Format phone number
+                const formattedPhone = formatPhoneNumber(phoneNumber);
+                
+                // Send SMS
+                const result = await sendSMS(formattedPhone, message);
+
+                // Show result
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `
+                        ✅ <strong>Message sent successfully!</strong><br>
+                        Message ID: ${result.messageId}<br>
+                        To: ${result.to}
+                    `;
+                    // Clear form
+                    document.getElementById('sms-form').reset();
+                    charCount.textContent = '0';
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `
+                        ❌ <strong>Failed to send message</strong><br>
+                        Error: ${result.error}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `
+                    ❌ <strong>Error:</strong> ${error.message}
+                `;
+            } finally {
+                // Re-enable button
+                sendButton.disabled = false;
+                sendButton.textContent = '📤 Send SMS';
+            }
+        });
+
+        // Test stock alert
+        async function sendTestStockAlert() {
+            const phoneNumber = document.getElementById('alert-phone').value;
+            const resultDiv = document.getElementById('alert-result');
+
+            if (!phoneNumber) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.textContent = '❌ Please enter a phone number';
+                return;
+            }
+
+            resultDiv.style.display = 'none';
+
+            // Sample stock data
+            const stockData = {
+                symbol: 'NVDA',
+                price: '487.23',
+                change: '15.67',
+                changePercent: '3.32',
+                isPositive: true
+            };
+
+            try {
+                const formattedPhone = formatPhoneNumber(phoneNumber);
+                const result = await sendStockAlert(formattedPhone, stockData);
+
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `✅ Test stock alert sent successfully!`;
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `❌ Failed: ${result.error}`;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

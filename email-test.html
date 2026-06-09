@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Test - Be My Ext</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="email-service.js"></script>
+    <style>
+        .email-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .result-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            color: #0369a1;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .info-box p {
+            color: #075985;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .info-box a {
+            color: #0284c7;
+            font-weight: 600;
+        }
+
+        .info-box ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            color: #075985;
+        }
+
+        .info-box li {
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-box code {
+            background: #e0f2fe;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .quick-tests {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .quick-test-btn {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .quick-test-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .quick-test-btn .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-test-btn .label {
+            font-weight: 600;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <h1 class="logo">Be My Ext</h1>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="stocks.html">Stocks</a></li>
+                    <li><a href="email-test.html">Email Test</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="stocks-section">
+            <div class="container">
+                <h2>Email Test</h2>
+                <p class="section-description">Send emails with stock alerts and notifications</p>
+
+                <div class="email-container">
+                    <div class="info-box">
+                        <h4>📧 Setup Required (Free & Easy)</h4>
+                        <p><strong>EmailJS Setup (5 minutes):</strong></p>
+                        <ol>
+                            <li>Sign up at <a href="https://www.emailjs.com/" target="_blank">EmailJS.com</a> (free account)</li>
+                            <li>Add an email service (Gmail, Outlook, etc.)</li>
+                            <li>Create a template with these variables: <code>to_email</code>, <code>from_name</code>, <code>subject</code>, <code>message</code></li>
+                            <li>Get your Public Key, Service ID, and Template ID</li>
+                            <li>Update <code>email-service.js</code> with your credentials</li>
+                        </ol>
+                        <p><strong>Free Tier:</strong> 200 emails/month</p>
+                    </div>
+
+                    <form id="email-form">
+                        <div class="form-group">
+                            <label for="to-email">To Email Address</label>
+                            <input 
+                                type="email" 
+                                id="to-email" 
+                                placeholder="recipient@example.com" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input 
+                                type="text" 
+                                id="subject" 
+                                placeholder="Email subject" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea 
+                                id="message" 
+                                placeholder="Enter your message here..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="send-button" id="send-button">
+                            📧 Send Email
+                        </button>
+                    </form>
+
+                    <div id="result-message" class="result-message"></div>
+                </div>
+
+                <div class="email-container" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Quick Test Emails</h3>
+                    <p style="color: #666; margin-bottom: 1rem;">Send pre-formatted test emails</p>
+                    
+                    <div class="form-group">
+                        <label for="test-email">Your Email Address</label>
+                        <input 
+                            type="email" 
+                            id="test-email" 
+                            placeholder="your@email.com"
+                        >
+                    </div>
+
+                    <div class="quick-tests">
+                        <div class="quick-test-btn" onclick="sendTestStockAlert()">
+                            <div class="icon">📊</div>
+                            <div class="label">Stock Alert</div>
+                        </div>
+                        <div class="quick-test-btn" onclick="sendTestPriceChange()">
+                            <div class="icon">⚠️</div>
+                            <div class="label">Price Alert</div>
+                        </div>
+                        <div class="quick-test-btn" onclick="sendTestDailySummary()">
+                            <div class="icon">📋</div>
+                            <div class="label">Daily Summary</div>
+                        </div>
+                    </div>
+
+                    <div id="test-result" class="result-message"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Be My Ext. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize EmailJS when page loads
+        window.addEventListener('load', () => {
+            initEmailJS();
+        });
+
+        // Email Form submission
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const toEmail = document.getElementById('to-email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            const sendButton = document.getElementById('send-button');
+            const resultDiv = document.getElementById('result-message');
+
+            // Validate email
+            if (!isValidEmail(toEmail)) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.textContent = '❌ Please enter a valid email address';
+                return;
+            }
+
+            // Disable button and show loading
+            sendButton.disabled = true;
+            sendButton.textContent = '📧 Sending...';
+            resultDiv.style.display = 'none';
+
+            try {
+                // Send email
+                const result = await sendEmail(toEmail, subject, message);
+
+                // Show result
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `
+                        ✅ <strong>Email sent successfully!</strong><br>
+                        Status: ${result.status}<br>
+                        To: ${toEmail}
+                    `;
+                    // Clear form
+                    document.getElementById('email-form').reset();
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `
+                        ❌ <strong>Failed to send email</strong><br>
+                        Error: ${result.error}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `
+                    ❌ <strong>Error:</strong> ${error.message}
+                `;
+            } finally {
+                // Re-enable button
+                sendButton.disabled = false;
+                sendButton.textContent = '📧 Send Email';
+            }
+        });
+
+        // Test stock alert
+        async function sendTestStockAlert() {
+            const email = document.getElementById('test-email').value;
+            const resultDiv = document.getElementById('test-result');
+
+            if (!email || !isValidEmail(email)) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.textContent = '❌ Please enter a valid email address';
+                return;
+            }
+
+            resultDiv.style.display = 'none';
+
+            // Sample stock data
+            const stockData = {
+                symbol: 'NVDA',
+                companyName: 'NVIDIA Corporation',
+                price: '487.23',
+                previousClose: '471.56',
+                change: '15.67',
+                changePercent: '3.32',
+                isPositive: true,
+                dayLow: '485.10',
+                dayHigh: '495.60',
+                yearLow: '280.50',
+                yearHigh: '520.40',
+                pe: '65.34',
+                eps: '7.46',
+                dividendYield: '0.03'
+            };
+
+            try {
+                const result = await sendStockAlertEmail(email, stockData);
+
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `✅ Test stock alert email sent to ${email}!`;
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `❌ Failed: ${result.error}`;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test price change alert
+        async function sendTestPriceChange() {
+            const email = document.getElementById('test-email').value;
+            const resultDiv = document.getElementById('test-result');
+
+            if (!email || !isValidEmail(email)) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.textContent = '❌ Please enter a valid email address';
+                return;
+            }
+
+            resultDiv.style.display = 'none';
+
+            const newsItems = [
+                {
+                    headline: 'TSLA announces new Gigafactory in Texas',
+                    source: 'Reuters',
+                    url: 'https://example.com/news1'
+                },
+                {
+                    headline: 'Tesla Q4 earnings beat expectations',
+                    source: 'Bloomberg',
+                    url: 'https://example.com/news2'
+                }
+            ];
+
+            try {
+                const result = await sendPriceChangeAlertEmail(email, 'TSLA', 12.5, newsItems);
+
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `✅ Test price change alert sent to ${email}!`;
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `❌ Failed: ${result.error}`;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test daily summary
+        async function sendTestDailySummary() {
+            const email = document.getElementById('test-email').value;
+            const resultDiv = document.getElementById('test-result');
+
+            if (!email || !isValidEmail(email)) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.textContent = '❌ Please enter a valid email address';
+                return;
+            }
+
+            resultDiv.style.display = 'none';
+
+            const stocksData = [
+                { symbol: 'NVDA', price: '487.23', change: '15.67', changePercent: '3.32', isPositive: true },
+                { symbol: 'TSLA', price: '248.92', change: '5.67', changePercent: '2.33', isPositive: true },
+                { symbol: 'AAPL', price: '178.45', change: '2.34', changePercent: '1.33', isPositive: true },
+                { symbol: 'AMD', price: '165.89', change: '-2.87', changePercent: '-1.70', isPositive: false },
+                { symbol: 'IBM', price: '185.32', change: '1.45', changePercent: '0.79', isPositive: true }
+            ];
+
+            try {
+                const result = await sendDailySummaryEmail(email, stocksData);
+
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result-message success';
+                    resultDiv.innerHTML = `✅ Test daily summary sent to ${email}!`;
+                } else {
+                    resultDiv.className = 'result-message error';
+                    resultDiv.innerHTML = `❌ Failed: ${result.error}`;
+                }
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-message error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Tracker - Be My Ext</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="stocks.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <h1 class="logo">Be My Ext</h1>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="stocks.html">Stocks</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="stocks" class="stocks-section">
+            <div class="container">
+                <h2>Stock Tracker</h2>
+                <p class="section-description">Track and analyze your favorite stocks in real-time</p>
+                <p class="data-source-note">* Asterisk indicates sample data (live data unavailable)</p>
+                
+                <div class="stocks-controls">
+                    <div class="source-selector">
+                        <label>Data Source:</label>
+                        <button id="source-yahoo" class="source-button active">Yahoo Finance</button>
+                        <button id="source-finnhub" class="source-button">Finnhub</button>
+                    </div>
+                    <button id="refresh-stocks" class="refresh-button">🔄 Refresh Prices</button>
+                    <p id="last-refresh" class="last-refresh">Loading...</p>
+                    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                        <span>Updating prices...</span>
+                    </div>
+                </div>
+                
+                <div class="stocks-grid">
+                    <div class="stock-card" data-symbol="IBM">
+                        <div class="stock-info">
+                            <h3>IBM</h3>
+                            <p class="company-name">IBM Corporation</p>
+                            <p class="business-summary">Global technology and consulting company providing integrated solutions and services worldwide, specializing in cloud computing, AI, and enterprise software.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-IBM"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="TQQQ">
+                        <div class="stock-info">
+                            <h3>TQQQ</h3>
+                            <p class="company-name">ProShares UltraPro QQQ</p>
+                            <p class="business-summary">Leveraged ETF seeking 3x daily performance of the NASDAQ-100 Index, focused on large-cap technology and growth companies.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-TQQQ"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="SPY">
+                        <div class="stock-info">
+                            <h3>SPY</h3>
+                            <p class="company-name">SPDR S&P 500 ETF</p>
+                            <p class="business-summary">Exchange-traded fund tracking the S&P 500 Index, providing exposure to 500 leading U.S. publicly traded companies across all sectors.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-SPY"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="NVDA">
+                        <div class="stock-info">
+                            <h3>NVDA</h3>
+                            <p class="company-name">NVIDIA Corporation</p>
+                            <p class="business-summary">Leading designer of graphics processing units (GPUs) for gaming, professional visualization, data centers, and automotive markets, pioneering AI computing.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-NVDA"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="AMD">
+                        <div class="stock-info">
+                            <h3>AMD</h3>
+                            <p class="company-name">Advanced Micro Devices</p>
+                            <p class="business-summary">Semiconductor company designing high-performance computing and graphics solutions for data centers, gaming, and embedded systems.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-AMD"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="MU">
+                        <div class="stock-info">
+                            <h3>MU</h3>
+                            <p class="company-name">Micron Technology</p>
+                            <p class="business-summary">Global leader in memory and storage solutions, manufacturing DRAM, NAND, and NOR flash memory products for various computing applications.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-MU"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="C">
+                        <div class="stock-info">
+                            <h3>C</h3>
+                            <p class="company-name">Citigroup Inc.</p>
+                            <p class="business-summary">Global financial services company providing banking, investment, and wealth management services to consumers, corporations, and governments worldwide.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-C"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="AAL">
+                        <div class="stock-info">
+                            <h3>AAL</h3>
+                            <p class="company-name">American Airlines</p>
+                            <p class="business-summary">Major U.S. airline operating domestic and international flights, offering passenger and cargo transportation services across six continents.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-AAL"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="TSLA">
+                        <div class="stock-info">
+                            <h3>TSLA</h3>
+                            <p class="company-name">Tesla Inc.</p>
+                            <p class="business-summary">Electric vehicle and clean energy company designing, manufacturing, and selling electric cars, solar products, and energy storage solutions.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-TSLA"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="KHC">
+                        <div class="stock-info">
+                            <h3>KHC</h3>
+                            <p class="company-name">Kraft Heinz Company</p>
+                            <p class="business-summary">Food and beverage company producing and marketing packaged foods including cheese, meats, beverages, and condiments under iconic brands.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-KHC"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="U">
+                        <div class="stock-info">
+                            <h3>U</h3>
+                            <p class="company-name">Unity Software Inc.</p>
+                            <p class="business-summary">Real-time 3D development platform for creating interactive content across gaming, film, automotive, architecture, and other industries.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-U"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="NET">
+                        <div class="stock-info">
+                            <h3>NET</h3>
+                            <p class="company-name">Cloudflare Inc.</p>
+                            <p class="business-summary">Cloud services company providing content delivery network, DDoS mitigation, internet security, and distributed domain name server services.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-NET"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="FSLR">
+                        <div class="stock-info">
+                            <h3>FSLR</h3>
+                            <p class="company-name">First Solar Inc.</p>
+                            <p class="business-summary">Leading manufacturer of solar panels and provider of utility-scale photovoltaic power plants and supporting services worldwide.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-FSLR"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-card" data-symbol="AAPL">
+                        <div class="stock-info">
+                            <h3>AAPL</h3>
+                            <p class="company-name">Apple Inc.</p>
+                            <p class="business-summary">Technology company designing and manufacturing consumer electronics, software, and online services including iPhone, Mac, iPad, and Apple Watch.</p>
+                            <div class="stock-news" style="display: none;">
+                                <h4>📰 Recent News</h4>
+                                <div class="news-items"></div>
+                            </div>
+                            <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+                        </div>
+                        <div class="stock-data">
+                            <p class="stock-price">Loading...</p>
+                            <p class="stock-change">--</p>
+                            <p class="day-range">Day: --</p>
+                            <p class="year-range">52W: --</p>
+                            <p class="stock-pe">PE: --</p>
+                            <p class="stock-eps">EPS: --</p>
+                            <p class="stock-div">Div: --</p>
+                        </div>
+                        <div class="stock-chart-container">
+                            <canvas id="chart-AAPL"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Be My Ext. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
