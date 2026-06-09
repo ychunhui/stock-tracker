@@ -250,9 +250,51 @@ function getCompanyName(symbol) {
         'U': 'Unity Software Inc.',
         'NET': 'Cloudflare Inc.',
         'FSLR': 'First Solar Inc.',
-        'AAPL': 'Apple Inc.'
+        'AAPL': 'Apple Inc.',
+        'AGNC': 'AGNC Investment Corp.',
+        'AIG': 'American International Group',
+        'AMZN': 'Amazon.com Inc.',
+        'BAC': 'Bank of America Corp.',
+        'COKE': 'Coca-Cola Consolidated',
+        'CRM': 'Salesforce Inc.',
+        'DIS': 'The Walt Disney Company',
+        'DUK': 'Duke Energy Corporation',
+        'ENB': 'Enbridge Inc.',
+        'F': 'Ford Motor Company',
+        'FCBC': 'First Community Bankshares',
+        'GE': 'General Electric Company',
+        'GOOG': 'Alphabet Inc.',
+        'GSK': 'GSK plc',
+        'HAL': 'Halliburton Company',
+        'IVV': 'iShares Core S&P 500 ETF',
+        'IWY': 'iShares Russell Top 200 Growth ETF',
+        'LYB': 'LyondellBasell Industries',
+        'MO': 'Altria Group Inc.',
+        'MOAT': 'VanEck Morningstar Wide Moat ETF',
+        'MTCH': 'Match Group Inc.',
+        'NFLX': 'Netflix Inc.',
+        'O': 'Realty Income Corporation',
+        'PFE': 'Pfizer Inc.',
+        'PFF': 'iShares Preferred and Income Securities ETF',
+        'PG': 'Procter & Gamble Company',
+        'PSX': 'Phillips 66',
+        'PTON': 'Peloton Interactive Inc.',
+        'REGN': 'Regeneron Pharmaceuticals',
+        'RIVN': 'Rivian Automotive Inc.',
+        'RSP': 'Invesco S&P 500 Equal Weight ETF',
+        'SHOP': 'Shopify Inc.',
+        'T': 'AT&T Inc.',
+        'UBER': 'Uber Technologies Inc.',
+        'UPS': 'United Parcel Service',
+        'USB': 'U.S. Bancorp',
+        'UVE': 'USCF SummerHaven Dynamic Commodity Strategy No K-1 ETF',
+        'VNQ': 'Vanguard Real Estate ETF',
+        'WBD': 'Warner Bros. Discovery',
+        'WFC': 'Wells Fargo & Company',
+        'XLE': 'Energy Select Sector SPDR Fund',
+        'XLK': 'Technology Select Sector SPDR Fund'
     };
-    return companies[symbol] || symbol;
+    return companies[symbol] || `${symbol} Corporation`;
 }
 
 /**
@@ -275,9 +317,103 @@ function getBusinessSummary(symbol) {
         'U': 'Real-time 3D development platform for creating interactive content across gaming, film, automotive, architecture, and other industries.',
         'NET': 'Cloud services company providing content delivery network, DDoS mitigation, internet security, and distributed domain name server services.',
         'FSLR': 'Leading manufacturer of solar panels and provider of utility-scale photovoltaic power plants and supporting services worldwide.',
-        'AAPL': 'Technology company designing and manufacturing consumer electronics, software, and online services including iPhone, Mac, iPad, and Apple Watch.'
+        'AAPL': 'Technology company designing and manufacturing consumer electronics, software, and online services including iPhone, Mac, iPad, and Apple Watch.',
+        'AGNC': 'Real estate investment trust investing in residential mortgage-backed securities, providing monthly dividends to shareholders.',
+        'AIG': 'Multinational insurance corporation providing property casualty insurance, life insurance, retirement products, and other financial services.',
+        'AMZN': 'E-commerce and cloud computing giant offering online retail, AWS cloud services, digital streaming, and artificial intelligence solutions.',
+        'BAC': 'Major banking and financial services company providing consumer banking, wealth management, and investment banking services.',
+        'COKE': 'Beverage company producing, marketing, and distributing nonalcoholic beverages including Coca-Cola products.',
+        'CRM': 'Cloud-based software company providing customer relationship management services and enterprise applications.',
+        'DIS': 'Entertainment conglomerate operating theme parks, film studios, television networks, and streaming services worldwide.',
+        'DUK': 'Electric power holding company providing electricity to customers in the Carolinas and Florida.',
+        'ENB': 'Energy infrastructure company transporting crude oil, natural gas, and renewable energy across North America.',
+        'F': 'Automotive manufacturer designing, manufacturing, and selling cars, trucks, SUVs, and electric vehicles globally.',
+        'FCBC': 'Community bank holding company providing banking services including deposits, loans, and wealth management.',
+        'GE': 'Industrial conglomerate focused on aviation, healthcare, power, and renewable energy solutions.',
+        'GOOG': 'Technology company specializing in internet services, search, advertising, cloud computing, and artificial intelligence.',
+        'GSK': 'Pharmaceutical and biotechnology company developing medicines, vaccines, and consumer healthcare products.',
+        'HAL': 'Oilfield services company providing drilling, evaluation, completion, and production services to energy industry.',
+        'IVV': 'ETF tracking the S&P 500 Index, providing broad exposure to large-cap U.S. equities.',
+        'IWY': 'ETF tracking the Russell Top 200 Growth Index, focusing on large-cap growth stocks.',
+        'LYB': 'Chemical and refining company producing plastics, chemicals, and fuels for various industries.',
+        'MO': 'Tobacco company manufacturing and selling cigarettes, smokeless products, and wine in the United States.',
+        'MOAT': 'ETF investing in companies with sustainable competitive advantages and wide economic moats.',
+        'MTCH': 'Online dating company operating Tinder, Match.com, Hinge, and other dating platforms worldwide.',
+        'NFLX': 'Streaming entertainment service offering TV series, films, and original content to subscribers globally.',
+        'O': 'Real estate investment trust investing in commercial properties, known for monthly dividend payments.',
+        'PFE': 'Pharmaceutical corporation discovering, developing, and manufacturing medicines and vaccines.',
+        'PFF': 'ETF investing in preferred stocks and income-producing securities from various sectors.',
+        'PG': 'Consumer goods corporation producing household, personal care, and hygiene products sold worldwide.',
+        'PSX': 'Energy manufacturing and logistics company refining, marketing, and transporting petroleum products.',
+        'PTON': 'Interactive fitness platform providing connected fitness equipment and digital fitness content.',
+        'REGN': 'Biotechnology company discovering, developing, and commercializing medicines for serious diseases.',
+        'RIVN': 'Electric vehicle manufacturer producing electric trucks, SUVs, and delivery vans.',
+        'RSP': 'ETF providing equal-weight exposure to S&P 500 companies, reducing concentration risk.',
+        'SHOP': 'E-commerce platform providing tools for businesses to create online stores and sell products.',
+        'T': 'Telecommunications company providing wireless services, internet, and entertainment through AT&T and DirecTV.',
+        'UBER': 'Technology platform connecting riders with drivers and facilitating food delivery services globally.',
+        'UPS': 'Package delivery and supply chain management company providing logistics services worldwide.',
+        'USB': 'Diversified financial services company offering banking, investment, mortgage, and payment services.',
+        'UVE': 'Commodity strategy ETF providing exposure to various commodity futures without K-1 tax forms.',
+        'VNQ': 'Real estate ETF investing in REITs and real estate companies across various property sectors.',
+        'WBD': 'Media and entertainment conglomerate operating television networks, streaming services, and film studios.',
+        'WFC': 'Financial services company providing banking, investment, mortgage, and consumer finance services.',
+        'XLE': 'Energy sector ETF investing in oil, gas, and consumable fuels companies from the S&P 500.',
+        'XLK': 'Technology sector ETF investing in technology companies from the S&P 500 index.'
     };
-    return summaries[symbol] || 'Business summary not available.';
+    return summaries[symbol] || `${getCompanyName(symbol)} - Financial services and investment company.`;
+}
+
+/**
+ * Create stock card HTML dynamically
+ * @param {string} symbol - Stock ticker symbol
+ * @returns {string} HTML string for stock card
+ */
+function createStockCardHTML(symbol) {
+    return `
+        <div class="stock-card" data-symbol="${symbol}">
+            <div class="stock-info">
+                <h3>${symbol}</h3>
+                <p class="company-name">${getCompanyName(symbol)}</p>
+                <p class="business-summary">${getBusinessSummary(symbol)}</p>
+                <div class="stock-news" style="display: none;">
+                    <h4>📰 Recent News</h4>
+                    <div class="news-items"></div>
+                </div>
+                <p class="weekly-highlight">📊 <span class="highlight-text">Loading weekly insights...</span></p>
+            </div>
+            <div class="stock-data">
+                <p class="stock-price">Loading...</p>
+                <p class="stock-change">--</p>
+                <p class="day-range">Day: --</p>
+                <p class="year-range">52W: --</p>
+                <p class="stock-pe">PE: --</p>
+                <p class="stock-eps">EPS: --</p>
+                <p class="stock-div">Div: --</p>
+            </div>
+            <div class="stock-chart-container">
+                <canvas id="chart-${symbol}"></canvas>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Initialize stock cards in the DOM
+ */
+function initializeStockCards() {
+    const stocksGrid = document.querySelector('.stocks-grid');
+    if (!stocksGrid) return;
+    
+    // Clear existing cards
+    stocksGrid.innerHTML = '';
+    
+    // Create cards for all stocks
+    stockSymbols.forEach(symbol => {
+        stocksGrid.innerHTML += createStockCardHTML(symbol);
+    });
+    
+    console.log(`Initialized ${stockSymbols.length} stock cards`);
 }
 
 /**
@@ -696,6 +832,9 @@ function updateLastRefreshTime() {
  * Initialize the stock tracker
  */
 function initStockTracker() {
+    // Initialize stock cards dynamically
+    initializeStockCards();
+    
     // Initial load - fetch immediately
     updateAllStocks();
     
