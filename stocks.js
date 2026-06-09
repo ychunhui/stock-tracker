@@ -1,5 +1,12 @@
 // Stock data management
-const stockSymbols = ['IBM', 'TQQQ', 'SPY', 'NVDA', 'AMD', 'MU', 'C', 'AAL', 'TSLA', 'KHC', 'U', 'NET', 'FSLR', 'AAPL'];
+const stockSymbols = [
+    // Original stocks
+    'IBM', 'TQQQ', 'SPY', 'NVDA', 'AMD', 'MU', 'C', 'AAL', 'TSLA', 'KHC', 'U', 'NET', 'FSLR', 'AAPL',
+    // New stocks added
+    'AGNC', 'AIG', 'AMZN', 'BAC', 'COKE', 'CRM', 'DIS', 'DUK', 'ENB', 'F', 'FCBC', 'GE', 'GOOG', 'GSK',
+    'HAL', 'IVV', 'IWY', 'LYB', 'MO', 'MOAT', 'MTCH', 'NFLX', 'O', 'PFE', 'PFF', 'PG', 'PSX', 'PTON',
+    'REGN', 'RIVN', 'RSP', 'SHOP', 'T', 'UBER', 'UPS', 'USB', 'UVE', 'VNQ', 'WBD', 'WFC', 'XLE', 'XLK'
+];
 
 // Check if running on local server (has proxy) or static file
 const isLocalServer = window.location.protocol === 'http:' && window.location.hostname === 'localhost';
