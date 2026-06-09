@@ -435,23 +435,59 @@ async function fetchFromFinnhub(symbol) {
     try {
         // Fetch current quote
         const quoteUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
-        const response = await fetch(quoteUrl);
+        const quoteResponse = await fetch(quoteUrl);
         
-        if (!response.ok) {
-            throw new Error(`Finnhub API error: ${response.status}`);
+        if (!quoteResponse.ok) {
+            throw new Error(`Finnhub API error: ${quoteResponse.status}`);
         }
         
-        const data = await response.json();
+        const quoteData = await quoteResponse.json();
         
-        // Finnhub returns: c (current), pc (previous close), h (high), l (low), o (open)
-        if (data.c && data.pc) {
-            const currentPrice = data.c;
-            const previousClose = data.pc;
+        // Fetch company metrics for P/E, EPS, dividend data
+        const metricsUrl = `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${FINNHUB_API_KEY}`;
+        let metricsData = null;
+        
+        try {
+            const metricsResponse = await fetch(metricsUrl);
+            if (metricsResponse.ok) {
+                metricsData = await metricsResponse.json();
+            }
+        } catch (metricsError) {
+            console.log(`Could not fetch metrics for ${symbol}:`, metricsError.message);
+        }
+        
+        // Finnhub quote returns: c (current), pc (previous close), h (high), l (low), o (open)
+        if (quoteData.c && quoteData.pc) {
+            const currentPrice = quoteData.c;
+            const previousClose = quoteData.pc;
             const change = currentPrice - previousClose;
             const changePercent = (change / previousClose) * 100;
             
             // Calculate weekly change
             const weeklyChange = await calculateWeeklyChangeFinnhub(symbol, currentPrice);
+            
+            // Extract metrics if available
+            let pe = null;
+            let eps = null;
+            let dividendYield = null;
+            let dividendRate = null;
+            let yearLow = null;
+            let yearHigh = null;
+            
+            if (metricsData && metricsData.metric) {
+                const metrics = metricsData.metric;
+                // P/E ratio
+                pe = metrics.peBasicExclExtraTTM || metrics.peNormalizedAnnual || null;
+                // EPS (Earnings Per Share)
+                eps = metrics.epsBasicExclExtraItemsTTM || metrics.epsNormalizedAnnual || null;
+                // Dividend Yield (as percentage)
+                dividendYield = metrics.dividendYieldIndicatedAnnual || metrics.dividendYieldTTM || null;
+                // Dividend Rate (annual dividend per share)
+                dividendRate = metrics.dividendPerShareAnnual || metrics.dividendPerShareTTM || null;
+                // 52-week range
+                yearLow = metrics['52WeekLow'] || null;
+                yearHigh = metrics['52WeekHigh'] || null;
+            }
             
             return {
                 symbol: symbol,
@@ -462,14 +498,14 @@ async function fetchFromFinnhub(symbol) {
                 changePercent: changePercent.toFixed(2),
                 isPositive: change >= 0,
                 source: 'Finnhub',
-                dayLow: data.l ? data.l.toFixed(2) : null,
-                dayHigh: data.h ? data.h.toFixed(2) : null,
-                yearLow: data.l ? data.l.toFixed(2) : null, // Finnhub doesn't provide 52-week in quote
-                yearHigh: data.h ? data.h.toFixed(2) : null,
-                pe: null, // Would need separate API call
-                eps: null,
-                dividendYield: null,
-                dividendRate: null,
+                dayLow: quoteData.l ? quoteData.l.toFixed(2) : null,
+                dayHigh: quoteData.h ? quoteData.h.toFixed(2) : null,
+                yearLow: yearLow ? yearLow.toFixed(2) : null,
+                yearHigh: yearHigh ? yearHigh.toFixed(2) : null,
+                pe: pe ? pe.toFixed(2) : null,
+                eps: eps ? eps.toFixed(2) : null,
+                dividendYield: dividendYield ? dividendYield.toFixed(2) : null,
+                dividendRate: dividendRate ? dividendRate.toFixed(2) : null,
                 weeklyChangePercent: weeklyChange
             };
         } else {
