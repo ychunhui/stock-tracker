@@ -185,50 +185,8 @@ async function fetchStockPrice(symbol) {
     };
 }
 
-/**
- * Get mock stock data as fallback
- * @param {string} symbol - Stock ticker symbol
- * @returns {Object} Mock stock data
- */
-function getMockStockData(symbol) {
-    const mockPrices = {
-        'IBM': { price: 185.32, change: 1.45, dayLow: 183.50, dayHigh: 186.75, yearLow: 120.30, yearHigh: 195.80, pe: 22.45, eps: 8.26, dividendYield: 3.85, dividendRate: 6.68 },
-        'TQQQ': { price: 58.76, change: 2.34, dayLow: 57.20, dayHigh: 59.45, yearLow: 28.50, yearHigh: 72.30, pe: null, eps: null, dividendYield: null, dividendRate: null },
-        'SPY': { price: 512.43, change: 3.21, dayLow: 510.20, dayHigh: 514.80, yearLow: 410.20, yearHigh: 525.60, pe: null, eps: null, dividendYield: 1.32, dividendRate: 6.76 },
-        'NVDA': { price: 487.23, change: -4.56, dayLow: 485.10, dayHigh: 495.60, yearLow: 280.50, yearHigh: 520.40, pe: 65.34, eps: 7.46, dividendYield: 0.03, dividendRate: 0.16 },
-        'AMD': { price: 165.89, change: 2.87, dayLow: 163.40, dayHigh: 167.20, yearLow: 95.30, yearHigh: 180.75, pe: 142.68, eps: 1.16, dividendYield: null, dividendRate: null },
-        'MU': { price: 98.45, change: -1.23, dayLow: 97.80, dayHigh: 100.20, yearLow: 62.40, yearHigh: 110.30, pe: 12.34, eps: 7.98, dividendYield: 0.52, dividendRate: 0.52 },
-        'C': { price: 62.34, change: 0.89, dayLow: 61.50, dayHigh: 63.10, yearLow: 45.20, yearHigh: 68.90, pe: 11.23, eps: 5.55, dividendYield: 3.21, dividendRate: 2.04 },
-        'AAL': { price: 14.56, change: -0.34, dayLow: 14.20, dayHigh: 15.10, yearLow: 10.50, yearHigh: 18.75, pe: 8.92, eps: 1.63, dividendYield: null, dividendRate: null },
-        'TSLA': { price: 248.92, change: 5.67, dayLow: 245.30, dayHigh: 252.80, yearLow: 152.40, yearHigh: 299.30, pe: 78.45, eps: 3.17, dividendYield: null, dividendRate: null },
-        'KHC': { price: 35.67, change: 0.45, dayLow: 35.20, dayHigh: 36.10, yearLow: 30.20, yearHigh: 40.50, pe: 14.56, eps: 2.45, dividendYield: 4.48, dividendRate: 1.60 },
-        'U': { price: 42.18, change: -1.89, dayLow: 41.50, dayHigh: 44.30, yearLow: 25.60, yearHigh: 52.80, pe: null, eps: -1.23, dividendYield: null, dividendRate: null },
-        'NET': { price: 78.92, change: 3.45, dayLow: 76.80, dayHigh: 80.50, yearLow: 48.30, yearHigh: 95.60, pe: null, eps: -0.34, dividendYield: null, dividendRate: null },
-        'FSLR': { price: 156.34, change: 4.23, dayLow: 153.20, dayHigh: 158.90, yearLow: 110.40, yearHigh: 180.20, pe: 18.67, eps: 8.37, dividendYield: null, dividendRate: null },
-        'AAPL': { price: 178.45, change: 2.34, dayLow: 176.80, dayHigh: 180.20, yearLow: 142.50, yearHigh: 195.30, pe: 28.92, eps: 6.17, dividendYield: 0.51, dividendRate: 0.96 }
-    };
-    
-    const mock = mockPrices[symbol] || { price: 100.00, change: 0.00, dayLow: 98.00, dayHigh: 102.00, yearLow: 80.00, yearHigh: 120.00, pe: 15.00, eps: 6.67, dividendYield: 2.00, dividendRate: 2.00 };
-    const changePercent = (mock.change / (mock.price - mock.change)) * 100;
-    
-    return {
-        symbol: symbol,
-        companyName: getCompanyName(symbol),
-        price: mock.price.toFixed(2),
-        change: mock.change.toFixed(2),
-        changePercent: changePercent.toFixed(2),
-        isPositive: mock.change >= 0,
-        dayLow: mock.dayLow.toFixed(2),
-        dayHigh: mock.dayHigh.toFixed(2),
-        yearLow: mock.yearLow.toFixed(2),
-        yearHigh: mock.yearHigh.toFixed(2),
-        pe: mock.pe ? mock.pe.toFixed(2) : null,
-        eps: mock.eps ? mock.eps.toFixed(2) : null,
-        dividendYield: mock.dividendYield ? mock.dividendYield.toFixed(2) : null,
-        dividendRate: mock.dividendRate ? mock.dividendRate.toFixed(2) : null,
-        isMock: true
-    };
-}
+// Mock data function removed - we never use mock data as fallback
+// When API fails, we display "fail to fetch" instead
 
 /**
  * Get company name from symbol
@@ -691,10 +649,7 @@ function updateStockCard(stockData) {
     }
     
     // Display yesterday's price and current price
-    const priceText = stockData.isMock
-        ? `$${stockData.previousClose} → $${stockData.price} *`
-        : `$${stockData.previousClose} → $${stockData.price}`;
-    priceElement.textContent = priceText;
+    priceElement.textContent = `$${stockData.previousClose} → $${stockData.price}`;
     
     const changeSign = stockData.isPositive ? '+' : '';
     changeElement.textContent = `${changeSign}${stockData.change} (${changeSign}${stockData.changePercent}%)`;
@@ -798,15 +753,11 @@ function updateStockCard(stockData) {
     }
     
     // Add title attribute to show data source
-    if (stockData.isMock) {
-        card.title = 'Using sample data (API unavailable)';
-    } else {
-        const source = stockData.source || 'Yahoo Finance';
-        card.title = `Live data from ${source}`;
-    }
+    const source = stockData.source || 'Yahoo Finance';
+    card.title = `Live data from ${source}`;
     
     // Log successful update
-    console.log(`Updated ${stockData.symbol}: $${stockData.price} (${stockData.isMock ? 'Sample' : 'Live'})`);
+    console.log(`Updated ${stockData.symbol}: $${stockData.price} (Live)`);
 }
 
 /**
@@ -826,11 +777,11 @@ async function updateAllStocks() {
         const promises = stockSymbols.map(symbol => fetchStockPrice(symbol));
         const results = await Promise.all(promises);
         
-        // Count live vs sample data
-        const liveCount = results.filter(r => !r.isMock).length;
-        const sampleCount = results.filter(r => r.isMock).length;
+        // Count successful vs failed fetches
+        const successCount = results.filter(r => !r.error).length;
+        const failedCount = results.filter(r => r.error).length;
         
-        console.log(`Results: ${liveCount} live, ${sampleCount} sample`);
+        console.log(`Results: ${successCount} successful, ${failedCount} failed`);
         
         // Update each stock card
         results.forEach(stockData => updateStockCard(stockData));
