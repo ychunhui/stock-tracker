@@ -26,6 +26,13 @@ let currentDataSource = 'yahoo';
 // Get free key at: https://finnhub.io/register
 const FINNHUB_API_KEY = 'd8k8941r01qjgd6sju90d8k8941r01qjgd6sju9g';
 
+// Schwab API credentials
+// Register as Individual Developer at: https://developer.schwab.com/
+// After registration, create an app to get your API key and secret
+const SCHWAB_API_KEY = 'YOUR_SCHWAB_API_KEY_HERE';
+const SCHWAB_API_SECRET = 'YOUR_SCHWAB_API_SECRET_HERE';
+const SCHWAB_ACCESS_TOKEN = ''; // Will be obtained through OAuth flow
+
 // Multiple API endpoints for redundancy
 const API_ENDPOINTS = [
     // Yahoo Finance v7 - FIRST because it has PE, EPS, and Dividend data
@@ -103,6 +110,11 @@ const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
  * @returns {Promise<Object>} Stock data including price and change
  */
 async function fetchStockPrice(symbol) {
+    // If Schwab is selected, use Schwab API
+    if (currentDataSource === 'schwab') {
+        return await fetchFromSchwab(symbol);
+    }
+    
     // If Finnhub is selected, use Finnhub API
     if (currentDataSource === 'finnhub') {
         return await fetchFromFinnhub(symbol);
@@ -495,6 +507,156 @@ async function fetchFromFinnhub(symbol) {
             errorMessage: 'fail to fetch'
         };
     }
+
+/**
+ * Fetch stock data from Schwab API
+ * Schwab API Documentation: https://developer.schwab.com/
+ * 
+ * Note: Schwab API requires OAuth 2.0 authentication
+ * Steps to use:
+ * 1. Register at https://developer.schwab.com/
+ * 2. Create an app to get API Key and Secret
+ * 3. Implement OAuth flow to get access token
+ * 4. Use access token to make API calls
+ * 
+ * @param {string} symbol - Stock ticker symbol
+ * @returns {Promise<Object>} Stock data
+ */
+async function fetchFromSchwab(symbol) {
+    // Check if API credentials are configured
+    if (SCHWAB_API_KEY === 'YOUR_SCHWAB_API_KEY_HERE' || !SCHWAB_ACCESS_TOKEN) {
+        console.error('Schwab API not configured. Please set up your API credentials.');
+        return {
+            symbol: symbol,
+            companyName: getCompanyName(symbol),
+            error: true,
+            errorMessage: 'Schwab API not configured'
+        };
+    }
+    
+    try {
+        // Schwab Market Data API endpoint for quotes
+        // API Base URL: https://api.schwabapi.com/marketdata/v1
+        const quoteUrl = `https://api.schwabapi.com/marketdata/v1/quotes?symbols=${symbol}`;
+        
+        const response = await fetch(quoteUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${SCHWAB_ACCESS_TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Schwab API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Parse Schwab API response
+        // Response structure: { [symbol]: { quote: {...}, fundamental: {...} } }
+        const stockData = data[symbol];
+        
+        if (!stockData || !stockData.quote) {
+            throw new Error('Invalid data from Schwab API');
+        }
+        
+        const quote = stockData.quote;
+        const fundamental = stockData.fundamental || {};
+        
+        // Extract quote data
+        const currentPrice = quote.lastPrice || quote.mark;
+        const previousClose = quote.closePrice;
+        const change = currentPrice - previousClose;
+        const changePercent = (change / previousClose) * 100;
+        
+        // Calculate weekly change
+        const weeklyChange = await calculateWeeklyChange(symbol, currentPrice);
+        
+        return {
+            symbol: symbol,
+            companyName: getCompanyName(symbol),
+            price: currentPrice.toFixed(2),
+            previousClose: previousClose.toFixed(2),
+            change: change.toFixed(2),
+            changePercent: changePercent.toFixed(2),
+            isPositive: change >= 0,
+            source: 'Schwab',
+            dayLow: quote.lowPrice ? quote.lowPrice.toFixed(2) : null,
+            dayHigh: quote.highPrice ? quote.highPrice.toFixed(2) : null,
+            yearLow: quote['52WeekLow'] ? quote['52WeekLow'].toFixed(2) : null,
+            yearHigh: quote['52WeekHigh'] ? quote['52WeekHigh'].toFixed(2) : null,
+            pe: fundamental.peRatio ? fundamental.peRatio.toFixed(2) : null,
+            eps: fundamental.eps ? fundamental.eps.toFixed(2) : null,
+            dividendYield: fundamental.divYield ? (fundamental.divYield * 100).toFixed(2) : null,
+            dividendRate: fundamental.divAmount ? fundamental.divAmount.toFixed(2) : null,
+            weeklyChangePercent: weeklyChange,
+            volume: quote.totalVolume || null,
+            marketCap: fundamental.marketCap || null
+        };
+        
+    } catch (error) {
+        console.error(`Schwab API failed for ${symbol}:`, error.message);
+        return {
+            symbol: symbol,
+            companyName: getCompanyName(symbol),
+            error: true,
+            errorMessage: 'fail to fetch'
+        };
+    }
+}
+
+/**
+ * Get Schwab OAuth access token
+ * This is a simplified example - in production, you should implement proper OAuth flow
+ * 
+ * OAuth Flow:
+ * 1. Redirect user to Schwab authorization URL
+ * 2. User logs in and authorizes your app
+ * 3. Schwab redirects back with authorization code
+ * 4. Exchange code for access token
+ * 
+ * @returns {Promise<string|null>} Access token or null
+ */
+async function getSchwabAccessToken() {
+    if (SCHWAB_API_KEY === 'YOUR_SCHWAB_API_KEY_HERE') {
+        return null;
+    }
+    
+    try {
+        // This is a placeholder - implement actual OAuth flow
+        // For production, you'll need:
+        // 1. Authorization endpoint: https://api.schwabapi.com/v1/oauth/authorize
+        // 2. Token endpoint: https://api.schwabapi.com/v1/oauth/token
+        // 3. Redirect URI (registered in your Schwab app)
+        
+        const tokenUrl = 'https://api.schwabapi.com/v1/oauth/token';
+        
+        // Exchange authorization code for access token
+        const response = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${btoa(`${SCHWAB_API_KEY}:${SCHWAB_API_SECRET}`)}`
+            },
+            body: new URLSearchParams({
+                'grant_type': 'authorization_code',
+                'code': 'AUTHORIZATION_CODE_FROM_REDIRECT',
+                'redirect_uri': 'YOUR_REDIRECT_URI'
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.access_token;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Failed to get Schwab access token:', error);
+        return null;
+    }
+}
 }
 
 /**
@@ -859,12 +1021,14 @@ function initStockTracker() {
     // Add source selector button listeners
     const yahooButton = document.getElementById('source-yahoo');
     const finnhubButton = document.getElementById('source-finnhub');
+    const schwabButton = document.getElementById('source-schwab');
     
     if (yahooButton) {
         yahooButton.addEventListener('click', () => {
             currentDataSource = 'yahoo';
             yahooButton.classList.add('active');
-            finnhubButton.classList.remove('active');
+            finnhubButton?.classList.remove('active');
+            schwabButton?.classList.remove('active');
             console.log('Switched to Yahoo Finance');
             updateAllStocks();
         });
@@ -874,8 +1038,20 @@ function initStockTracker() {
         finnhubButton.addEventListener('click', () => {
             currentDataSource = 'finnhub';
             finnhubButton.classList.add('active');
-            yahooButton.classList.remove('active');
+            yahooButton?.classList.remove('active');
+            schwabButton?.classList.remove('active');
             console.log('Switched to Finnhub');
+            updateAllStocks();
+        });
+    }
+    
+    if (schwabButton) {
+        schwabButton.addEventListener('click', () => {
+            currentDataSource = 'schwab';
+            schwabButton.classList.add('active');
+            yahooButton?.classList.remove('active');
+            finnhubButton?.classList.remove('active');
+            console.log('Switched to Schwab');
             updateAllStocks();
         });
     }
