@@ -1,12 +1,20 @@
-// Stock data management
-const stockSymbols = [
-    // Original stocks
-    'IBM', 'TQQQ', 'SPY', 'NVDA', 'AMD', 'MU', 'C', 'AAL', 'TSLA', 'KHC', 'U', 'NET', 'FSLR', 'AAPL',
-    // New stocks added
-    'AGNC', 'AIG', 'AMZN', 'BAC', 'COKE', 'CRM', 'DIS', 'DUK', 'ENB', 'F', 'FCBC', 'GE', 'GOOG', 'GSK',
-    'HAL', 'IVV', 'IWY', 'LYB', 'MO', 'MOAT', 'MTCH', 'NFLX', 'O', 'PFE', 'PFF', 'PG', 'PSX', 'PTON',
-    'REGN', 'RIVN', 'RSP', 'SHOP', 'T', 'UBER', 'UPS', 'USB', 'UVE', 'VNQ', 'WBD', 'WFC', 'XLE', 'XLK'
-];
+// Stock data management - organized by groups
+const stockGroups = {
+    'Top': ['IBM', 'TQQQ', 'SPY'],
+    'High Div': ['KHC', 'AGNC', 'C', 'DUK', 'ENB', 'O', 'PFE', 'UPS'],
+    'Buy Low': ['AAL', 'NVDA', 'AMD', 'MU', 'U', 'T'],
+    'ETF': ['XLE', 'IWY', 'IVV', 'MOAT', 'PFF', 'RSP', 'UVE', 'VNQ', 'XLK'],
+    'Others': [
+        'BAC', 'AIG', 'FCBC', 'WFC',
+        'TSLA', 'NET', 'FSLR', 'AAPL', 'AMZN', 'NFLX',
+        'COKE', 'CRM', 'DIS', 'F', 'GE', 'GOOG', 'GSK',
+        'HAL', 'LYB', 'MO', 'MTCH', 'PG', 'PSX',
+        'REGN', 'RIVN', 'SHOP', 'UBER', 'USB', 'WBD', 'PTON'
+    ]
+};
+
+// Flatten all symbols for backward compatibility
+const stockSymbols = Object.values(stockGroups).flat();
 
 // Check if running on local server (has proxy) or static file
 const isLocalServer = window.location.protocol === 'http:' && window.location.hostname === 'localhost';
@@ -357,7 +365,7 @@ function createStockCardHTML(symbol) {
 }
 
 /**
- * Initialize stock cards in the DOM
+ * Initialize stock cards in the DOM with group headers
  */
 function initializeStockCards() {
     const stocksGrid = document.querySelector('.stocks-grid');
@@ -366,12 +374,21 @@ function initializeStockCards() {
     // Clear existing cards
     stocksGrid.innerHTML = '';
     
-    // Create cards for all stocks
-    stockSymbols.forEach(symbol => {
-        stocksGrid.innerHTML += createStockCardHTML(symbol);
+    // Create cards for each group
+    Object.entries(stockGroups).forEach(([groupName, symbols]) => {
+        // Add group header
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'stock-group-header';
+        groupHeader.innerHTML = `<h2>${groupName} (${symbols.length})</h2>`;
+        stocksGrid.appendChild(groupHeader);
+        
+        // Add stocks in this group
+        symbols.forEach(symbol => {
+            stocksGrid.innerHTML += createStockCardHTML(symbol);
+        });
     });
     
-    console.log(`Initialized ${stockSymbols.length} stock cards`);
+    console.log(`Initialized ${stockSymbols.length} stock cards in ${Object.keys(stockGroups).length} groups`);
 }
 
 /**
