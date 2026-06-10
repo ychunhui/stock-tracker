@@ -730,12 +730,12 @@ function updateStockCard(stockData) {
         }
     }
     
-    // Check if price change > 10% to fetch news
-    const dailyChange = Math.abs(parseFloat(stockData.changePercent));
-    const weeklyChange = stockData.weeklyChangePercent ? Math.abs(stockData.weeklyChangePercent) : 0;
-    const shouldShowNews = dailyChange > 10 || weeklyChange > 10;
+    // Check if price DROPS more than 10% to fetch news (negative change only)
+    const dailyChange = parseFloat(stockData.changePercent);
+    const weeklyChange = stockData.weeklyChangePercent || 0;
+    const shouldShowNews = dailyChange < -10 || weeklyChange < -10;
     
-    // Update news section - only show if change > 10%
+    // Update news section - only show if stock drops > 10%
     const newsContainer = card.querySelector('.stock-news');
     if (newsContainer && shouldShowNews) {
         // Fetch and display news
@@ -772,23 +772,23 @@ function updateStockCard(stockData) {
         newsContainer.style.display = 'none';
     }
     
-    // Update weekly highlight - only show if change > 10%
+    // Update weekly highlight - only show if stock drops > 10%
     const weeklyHighlightContainer = card.querySelector('.weekly-highlight');
     const weeklyHighlightElement = card.querySelector('.weekly-highlight .highlight-text');
     
     if (weeklyHighlightContainer && weeklyHighlightElement) {
-        // Show highlight if daily change > 10% OR weekly change > 10%
+        // Show highlight if daily drop > 10% OR weekly drop > 10%
         if (shouldShowNews) {
             weeklyHighlightContainer.style.display = 'block';
             
             // Determine which change to highlight
             let changeText = '';
-            if (dailyChange > 10 && weeklyChange > 10) {
-                changeText = `📈 Significant movement: ${dailyChange.toFixed(1)}% today, ${weeklyChange.toFixed(1)}% this week. `;
-            } else if (dailyChange > 10) {
-                changeText = `📈 Major daily move: ${dailyChange.toFixed(1)}% change today. `;
+            if (dailyChange < -10 && weeklyChange < -10) {
+                changeText = `📉 Significant drop: ${Math.abs(dailyChange).toFixed(1)}% today, ${Math.abs(weeklyChange).toFixed(1)}% this week. `;
+            } else if (dailyChange < -10) {
+                changeText = `📉 Major daily drop: ${Math.abs(dailyChange).toFixed(1)}% decline today. `;
             } else {
-                changeText = `📈 Notable weekly trend: ${weeklyChange.toFixed(1)}% change this week. `;
+                changeText = `📉 Notable weekly decline: ${Math.abs(weeklyChange).toFixed(1)}% drop this week. `;
             }
             
             weeklyHighlightElement.textContent = changeText + getWeeklyHighlight(stockData.symbol);
