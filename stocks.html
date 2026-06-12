@@ -108,43 +108,49 @@
 
         .source-selector label {
             font-weight: 600;
-            color: var(--primary-green);
+            color: royalblue;
         }
 
         .source-button {
             padding: 0.5rem 1.5rem;
-            border: 2px solid var(--primary-green);
-            background: var(--white);
-            color: var(--primary-green);
+            border: 2px solid royalblue;
+            background: transparent;
+            color: royalblue;
             border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
             transition: var(--transition-fast);
         }
 
         .source-button:hover {
-            background: var(--primary-green-light);
+            background: royalblue;
             color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .source-button.active {
-            background: var(--primary-green);
+            background: royalblue;
             color: var(--white);
+            border-color: royalblue;
         }
 
         .refresh-button {
-            padding: 0.5rem 1.5rem;
-            background: var(--accent-yellow);
-            color: var(--primary-green-dark);
-            border: none;
+            padding: 0.75rem 1.5rem;
+            background: royalblue;
+            color: var(--white);
+            border: 2px solid royalblue;
             border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
             transition: var(--transition-fast);
         }
 
         .refresh-button:hover {
-            background: var(--accent-yellow-light);
+            background: royalblue;
+            border-color: royalblue;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
