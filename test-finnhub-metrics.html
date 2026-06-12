@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Finnhub Metrics</title>
+</head>
+<body>
+    <h1>Finnhub Metrics Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const FINNHUB_API_KEY = 'd8k8941r01qjgd6sju90d8k8941r01qjgd6sju9g';
+        const symbol = 'AAPL';
+        
+        async function testFinnhub() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Fetching data...</p>';
+            
+            try {
+                // Fetch quote
+                const quoteUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+                const quoteResponse = await fetch(quoteUrl);
+                const quoteData = await quoteResponse.json();
+                
+                // Fetch metrics
+                const metricsUrl = `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${FINNHUB_API_KEY}`;
+                const metricsResponse = await fetch(metricsUrl);
+                const metricsData = await metricsResponse.json();
+                
+                const metrics = metricsData.metric;
+                
+                resultsDiv.innerHTML = `
+                    <h2>${symbol} Data from Finnhub:</h2>
+                    <h3>Quote Data:</h3>
+                    <p>Current Price: $${quoteData.c}</p>
+                    <p>Previous Close: $${quoteData.pc}</p>
+                    <p>Day High: $${quoteData.h}</p>
+                    <p>Day Low: $${quoteData.l}</p>
+                    
+                    <h3>Financial Metrics:</h3>
+                    <p>P/E Ratio (peBasicExclExtraTTM): ${metrics.peBasicExclExtraTTM || 'N/A'}</p>
+                    <p>P/E Ratio (peNormalizedAnnual): ${metrics.peNormalizedAnnual || 'N/A'}</p>
+                    <p>EPS (epsBasicExclExtraItemsTTM): ${metrics.epsBasicExclExtraItemsTTM || 'N/A'}</p>
+                    <p>EPS (epsNormalizedAnnual): ${metrics.epsNormalizedAnnual || 'N/A'}</p>
+                    <p>Dividend Yield (dividendYieldIndicatedAnnual): ${metrics.dividendYieldIndicatedAnnual || 'N/A'}%</p>
+                    <p>Dividend Rate (dividendPerShareAnnual): $${metrics.dividendPerShareAnnual || 'N/A'}</p>
+                    <p>52-Week Low: $${metrics['52WeekLow'] || 'N/A'}</p>
+                    <p>52-Week High: $${metrics['52WeekHigh'] || 'N/A'}</p>
+                    
+                    <h3>Raw Metrics Object Keys:</h3>
+                    <pre>${Object.keys(metrics).filter(k => k.includes('pe') || k.includes('eps') || k.includes('dividend') || k.includes('52')).join('\n')}</pre>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        testFinnhub();
+    </script>
+</body>
+</html>
